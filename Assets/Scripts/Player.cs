@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
+
 
 public class Player : MonoBehaviour
 {
@@ -19,6 +19,10 @@ public class Player : MonoBehaviour
     [SerializeField] Sprite[] sprites;
     SpriteRenderer spriteRenderer;
 
+    Transform HitCar;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,9 +38,9 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        transform.position = Vector3.MoveTowards(transform.position, new Vector3(lanes[targetLane], transform.position.y, transform.position.z), 10 * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, new Vector3(lanes[targetLane], transform.position.y, transform.position.z), 20 * Time.fixedDeltaTime);
         float orientation = (lanes[targetLane] - transform.position.x) / 4 * -30f;
 
         transform.rotation = Quaternion.Euler(0, 0, orientation);
@@ -46,6 +50,11 @@ public class Player : MonoBehaviour
             freeLane = _freelane;
         }
     }
+
+    // void FixedUpdate()
+    // {
+
+    // }
 
     void LateUpdate()
     {
@@ -59,13 +68,13 @@ public class Player : MonoBehaviour
 
     public float GetHitDistanceRatio()
     {
-        return hitDistance / rayLength;
+        return hitDistance / (rayLength * WorldManager.Difficulty);
     }
 
     bool Blocked(out int freelane, out float distance)
     {
         bool blocked = false;
-        freelane = -1;
+        freelane = 0;
         distance = float.MaxValue;
 
         RaycastHit2D hit2D;
@@ -80,23 +89,29 @@ public class Player : MonoBehaviour
             foreach (var lane in _lanes)
             {
                 if (lane == lanes[targetLane]) continue;// skip current lane
-                if (!Physics2D.Raycast(new Vector2(lane, rayPoint.position.y), Vector2.up, rayLength * 2).transform)
+                if (!Physics2D.Raycast(new Vector2(lane, rayPoint.position.y), Vector2.up, 1.5f * rayLength).transform)
                 {
                     freelane = lane < 0 ? 0 : (lane == 0 ? 1 : 2);
                     break;
                 }
             }
 
+            HitCar = hit2D.transform;
             distance = hit2D.distance;
-            Debug.Log(hit2D.transform.name);
             blocked = true;
         }
 
         return blocked;
     }
 
+    public void RemoveHitCar()
+    {
+        if (HitCar) HitCar.gameObject.SetActive(false);
+        CameraShaker.Instance.ShakeCam(0.2f, 0.2f);
+    }
+
     void OnDrawGizmos()
     {
-        Gizmos.DrawRay(rayPoint.position, Vector3.up * rayLength);
+        Gizmos.DrawRay(rayPoint.position, Vector3.up * WorldManager.Difficulty * rayLength);
     }
 }

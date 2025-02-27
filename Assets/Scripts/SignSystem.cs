@@ -42,7 +42,7 @@ public class SignSystem : MonoBehaviour
         }
         signButton.gameObject.SetActive(false);
 
-        ToggleButtonsOff();
+        ToggleButtonsOff(immediate: true);
     }
 
     void Update()
@@ -58,6 +58,7 @@ public class SignSystem : MonoBehaviour
             ToggleButtonsOff();
             crashIndicator.Pop(false);
             GameStateManager.Singleton.Warn();
+            player.RemoveHitCar();
         }
 
         if (buttonIndicatorHolder)
@@ -76,10 +77,12 @@ public class SignSystem : MonoBehaviour
         if (clicked == displayingSign)
         {
             player.SwitchLane();
+            GameStateManager.Singleton.AddScore(100);
         }
         else
         {
             GameStateManager.Singleton.Warn();
+            player.RemoveHitCar();
         }
     }
 
@@ -88,15 +91,16 @@ public class SignSystem : MonoBehaviour
         displayingSign = (displayingSign + Random.Range(0, signs.Length)) % signs.Length;
         signage.sprite = signs[displayingSign];
         ToggleButtonsOn();
+        StartCoroutine(AutoClick());
     }
 
-    private void ToggleButtonsOff()
+    private void ToggleButtonsOff(bool immediate = false)
     {
-        StartCoroutine(toggleOffRoutine());
+        StartCoroutine(toggleOffRoutine(immediate));
     }
-    IEnumerator toggleOffRoutine()
+    IEnumerator toggleOffRoutine(bool immediate)
     {
-        yield return new WaitForSeconds(0.4f);
+        if (!immediate) yield return new WaitForSeconds(0.4f);
         signButtons[displayingSign].gameObject.SetActive(false);
         foreach (var item in signButtons)
         {
@@ -127,5 +131,17 @@ public class SignSystem : MonoBehaviour
         {
             item.interactable = flag;
         }
+    }
+
+    int clicks = 0;
+    IEnumerator AutoClick()
+    {
+        //if (clicks < 30)
+        if (clicks < 0)
+        {
+            yield return new WaitForSeconds(Time.deltaTime * 3);
+            signButtons[displayingSign].onClick.Invoke();
+        }
+        clicks++;
     }
 }

@@ -13,7 +13,14 @@ public class WeatherManager : MonoBehaviour
     static int weather = 0;
     int lastweather;
 
+    float weatherTimer = 0;
+
     public static Action<WeatherType> OnWeatherChange;
+
+    void Awake()
+    {
+        OnWeatherChange = null;
+    }
 
     void Start()
     {
@@ -25,6 +32,16 @@ public class WeatherManager : MonoBehaviour
         lastweather = weather;
         weather = (int)weatherType;
         if (weather != lastweather) OnWeatherChange?.Invoke(weatherType);
+
+        if (!GameStateManager.Singleton.isGameOver)
+        {
+            weatherTimer += Time.deltaTime;
+            if (weatherTimer >= UnityEngine.Random.Range(10f, 15f))
+            {
+                weatherType = (WeatherType)((weather + 1) % 2);
+                weatherTimer = 0;
+            }
+        }
     }
 
     public static int GetDayNight()
