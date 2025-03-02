@@ -20,7 +20,11 @@ public class UIScreen : MonoBehaviour
 
     void Start()
     {
-
+        if (screenType == Screens.ScoreBoard)
+        {
+            Debug.Log("Scoreboard screen init()");
+            LeaderboardManager.Singleton.GetLeaderboard();
+        }
     }
 
     void Update()

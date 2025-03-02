@@ -36,6 +36,6 @@ public class SplashScreen : MonoBehaviour
             yield return null;
         }
         loadingBar.value = 1;
-        SceneManager.LoadSceneAsync(1);
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

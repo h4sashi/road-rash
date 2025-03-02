@@ -63,6 +63,12 @@ public class GameStateManager : MonoBehaviour
     void ShowGameOverScreen()
     {
         GameplayUIManager.Singleton.ShowScreen(Screens.GameOver);
+
+        if (score > LeaderboardManager.Singleton.previousHighScore)
+        {
+            LeaderboardManager.Singleton.SubmitScore(score);
+        }
+
     }
 
     public void AddScore(int _score)
