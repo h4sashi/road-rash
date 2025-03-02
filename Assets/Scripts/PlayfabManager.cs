@@ -38,7 +38,7 @@ public class PlayfabManager : MonoBehaviour
 
     void Start()
     {
-        PlayerPrefs.DeleteAll();
+        // PlayerPrefs.DeleteAll();
         // Generate a unique CustomID for the player (You may want to store this in PlayerPrefs for persistence)
         if (!PlayerPrefs.HasKey("PlayFabCustomID"))
         {
