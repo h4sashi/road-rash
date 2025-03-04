@@ -1,28 +1,18 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayfabManager : MonoBehaviour
 {
-    private string customID;
-    public UIManager uiManager;
-
-    public EventSystem eventSystem;
-    public Image inactivePanel;
-
     public static PlayfabManager Instance;
-
+    public LoginManager loginManager;
 
     private void Awake()
     {
-        uiManager = GameObject.FindObjectOfType<UIManager>();
-
-        // SceneManager.sceneLoaded += OnSceneLoaded;
         if (Instance == null)
         {
             Instance = this;
@@ -32,58 +22,120 @@ public class PlayfabManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        customID = "SabiDriver" + Guid.NewGuid().ToString();
     }
 
-    void Start()
+    private void OnEnable()
     {
         // PlayerPrefs.DeleteAll();
-        // Generate a unique CustomID for the player (You may want to store this in PlayerPrefs for persistence)
-        if (!PlayerPrefs.HasKey("PlayFabCustomID"))
+        Debug.Log("PlayfabManager Started!");
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        StartCoroutine(AutoLogin(1.3f)); // Attempt auto-login on startup
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.buildIndex == 0)
         {
-            customID = "SabiDriver"+Guid.NewGuid().ToString(); // Generate a unique GUID
-            PlayerPrefs.SetString("PlayFabCustomID", customID);
-            PlayerPrefs.Save();
+            loginManager = GameObject.Find("LoginManager").GetComponent<LoginManager>();
+        }
+    }
+
+    public void OnLogin(string username, string password, bool rememberMe)
+    {
+        var request = new LoginWithPlayFabRequest
+        {
+            Username = username,
+            Password = password
+        };
+
+        PlayFabClientAPI.LoginWithPlayFab(request, result => OnLoginSuccess(result, rememberMe), OnLoginFailure);
+    }
+
+    private void OnLoginSuccess(LoginResult result, bool rememberMe)
+    {
+        loginManager.loaderUI.SetActive(false); // Hide loader UI
+        loginManager.LoginContainer.SetActive(false); // Hide login UI
+
+        loginManager.loginStatus.text = "Login Successful!";
+        Debug.Log("Login Successful! User ID: " + result.PlayFabId);
+
+        if (rememberMe)
+        {
+            PlayerPrefs.SetString("SavedUsername", loginManager.loginUsername.text);
+            PlayerPrefs.SetString("SavedPassword", loginManager.loginPassword.text);
+            PlayerPrefs.SetInt("RememberMe", 1);
         }
         else
         {
-            customID = PlayerPrefs.GetString("PlayFabCustomID");
-        }
-
-
-        Login();
-    }
-
-    void Login()
-    {
-        var request = new LoginWithCustomIDRequest
-        {
-            CustomId = customID,
-            CreateAccount = true // Create account if it doesn't exist
-        };
-
-        PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
-    }
-
-    void OnLoginSuccess(LoginResult result)
-    {
-        Debug.Log("Login Successful! PlayFab ID: " + result.PlayFabId);
-        eventSystem.enabled = true;
-        inactivePanel.gameObject.SetActive(false);
-
-        // Check if username is set
-        if (string.IsNullOrEmpty(result.InfoResultPayload?.PlayerProfile?.DisplayName))
-        {
-            Debug.Log("No username set. Prompting player to set one.");
-            // Example: Call UI to ask for username input
+            PlayerPrefs.DeleteKey("SavedUsername");
+            PlayerPrefs.DeleteKey("SavedPassword");
+            PlayerPrefs.SetInt("RememberMe", 0);
         }
     }
 
-    void OnLoginFailure(PlayFabError error)
+    private void OnLoginFailure(PlayFabError error)
     {
+        loginManager.loginStatus.text = "Login Failed: " + error.ErrorMessage;
         Debug.LogError("Login Failed: " + error.GenerateErrorReport());
     }
+
+    public void OnRegistration(string username, string email, string password)
+    {
+        var request = new RegisterPlayFabUserRequest
+        {
+            Email = email,
+            Password = password,
+            Username = username
+        };
+
+        PlayFabClientAPI.RegisterPlayFabUser(request, OnRegistrationSuccess, OnRegistrationFailure);
+    }
+
+    private void OnRegistrationSuccess(RegisterPlayFabUserResult result)
+    {
+        loginManager.registerStatus.text = "Registration Successful!";
+        Debug.Log("Registration Successful! User ID: " + result.PlayFabId + " " + result.Username);
+        loginManager.smallLoginUI.SetActive(false);
+        OnLogin(result.Username, loginManager.registrationPassword.text, false);
+
+    }
+
+    private void OnRegistrationFailure(PlayFabError error)
+    {
+        loginManager.registerStatus.text = "Registration Failed: " + error.ErrorMessage;
+        Debug.LogError("Registration Failed: " + error.GenerateErrorReport());
+    }
+
+   IEnumerator AutoLogin(float t)
+{
+    yield return new WaitForSeconds(t);
+
+    if (PlayerPrefs.GetInt("RememberMe", 0) == 1)
+    {
+        loginManager.LoginContainer.SetActive(false); // Hide login UI
+        loginManager.loaderUI.SetActive(true); // Show loader UI
+
+        string savedUsername = PlayerPrefs.GetString("SavedUsername", "");
+        string savedPassword = PlayerPrefs.GetString("SavedPassword", "");
+
+        if (!string.IsNullOrEmpty(savedUsername) && !string.IsNullOrEmpty(savedPassword))
+        {
+            OnLogin(savedUsername, savedPassword, true);
+            yield break; // Stop execution if login proceeds
+        }
+    }
+
+    // If auto-login is disabled or fails, show the login UI
+    loginManager.loaderUI.SetActive(false); // Hide loader UI
+    loginManager.smallLoginUI.SetActive(true); // Show login UI
+}
+
 
     public void SetUsername(string username)
     {
@@ -92,21 +144,43 @@ public class PlayfabManager : MonoBehaviour
             DisplayName = username
         };
 
-        PlayFabClientAPI.UpdateUserTitleDisplayName(request, OnUsernameSetSuccess, OnUsernameSetFailure);
+        PlayFabClientAPI.UpdateUserTitleDisplayName(request, result =>
+        {
+            Debug.Log("Display Name updated to: " + result.DisplayName);
+
+            // Update UIManager elements
+            UIManager uiManager = FindObjectOfType<UIManager>();
+            if (uiManager != null)
+            {
+                uiManager.usernameText.text = result.DisplayName; // Show updated username
+                uiManager.usernamePanel.SetActive(false); // Hide username input panel
+                uiManager.characterPanel.SetActive(true); // Show character selection panel
+            }
+
+        }, error => Debug.LogError("Failed to update Display Name: " + error.GenerateErrorReport()));
     }
 
-    void OnUsernameSetSuccess(UpdateUserTitleDisplayNameResult result)
+    public void FetchUsername()
     {
-        Debug.Log("Username set successfully: " + result.DisplayName);
-        uiManager.usernameText.text = result.DisplayName;
-        uiManager.characterPanel.SetActive(true);
-        uiManager.usernamePanel.SetActive(false);
+        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), result =>
+        {
+            string savedUsername = result.AccountInfo.TitleInfo.DisplayName;
+
+            if (!string.IsNullOrEmpty(savedUsername))
+            {
+                // Found a saved username, update the UI
+                UIManager uiManager = FindObjectOfType<UIManager>();
+                if (uiManager != null)
+                {
+                    uiManager.usernameText.text = savedUsername; // Show saved username
+                    uiManager.usernamePanel.SetActive(false); // Hide input panel
+                    uiManager.characterPanel.SetActive(true); // Show character panel
+                }
+            }
+        },
+        error => Debug.LogError("Failed to fetch username: " + error.GenerateErrorReport()));
     }
 
-    void OnUsernameSetFailure(PlayFabError error)
-    {
-        Debug.LogError("Failed to set username: " + error.GenerateErrorReport());
-    }
+
+
 }
-
-

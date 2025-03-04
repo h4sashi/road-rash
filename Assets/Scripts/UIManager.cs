@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,23 +8,21 @@ public class UIManager : MonoBehaviour
     public GameObject usernamePanel, characterPanel;
     public TMP_InputField usernameInput;
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        PlayfabManager.Instance.FetchUsername();
     }
 
     public void Submit()
     {
-        PlayfabManager.Instance.SetUsername(usernameInput.text);
+        if (!string.IsNullOrEmpty(usernameInput.text))
+        {
+            PlayfabManager.Instance.SetUsername(usernameInput.text);
+        }
+        else
+        {
+            Debug.LogWarning("Username cannot be empty!");
+        }
     }
 
     public void StartGame()
@@ -36,6 +32,6 @@ public class UIManager : MonoBehaviour
 
     public void SoundToggle()
     {
-
+        // Implement sound toggle logic here
     }
 }
