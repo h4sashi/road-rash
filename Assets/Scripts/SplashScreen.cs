@@ -19,11 +19,13 @@ public class SplashScreen : MonoBehaviour
             loadingBar.gameObject.SetActive(true);
             StartCoroutine(Load());
         });
+
+        //OpenKeyboard();
     }
 
     void Update()
     {
-
+        //UpdateKeyboard();
     }
 
     IEnumerator Load()
@@ -38,4 +40,23 @@ public class SplashScreen : MonoBehaviour
         loadingBar.value = 1;
         SceneManager.LoadSceneAsync("Profiler");
     }
+
+#if UNITY_WEBGL //&& !UNITY_EDITOR
+    TouchScreenKeyboard keyboard;
+
+    void OpenKeyboard()
+    {
+        keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default);
+    }
+
+    void UpdateKeyboard()
+    {
+        if (keyboard != null && keyboard.status == TouchScreenKeyboard.Status.Done)
+        {
+            string inputText = keyboard.text;
+            // Process inputText
+            keyboard = null;
+        }
+    }
+#endif
 }
