@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 26615568}
   - component: {fileID: 26615570}
   - component: {fileID: 26615567}
+  - component: {fileID: 26615571}
   m_Layer: 5
   m_Name: usernameInputField (TMP)
   m_TagString: Untagged
@@ -388,6 +389,18 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
+--- !u!114 &26615571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 26615565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72182a2b25d374ddb9b23868d407bd3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &75790620
 GameObject:
   m_ObjectHideFlags: 0
@@ -2341,6 +2354,7 @@ GameObject:
   - component: {fileID: 663913580}
   - component: {fileID: 663913579}
   - component: {fileID: 663913578}
+  - component: {fileID: 663913582}
   m_Layer: 5
   m_Name: passwordInputField (TMP)
   m_TagString: Untagged
@@ -2519,6 +2533,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 663913576}
   m_CullTransparentMesh: 1
+--- !u!114 &663913582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 663913576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72182a2b25d374ddb9b23868d407bd3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &721531221
 GameObject:
   m_ObjectHideFlags: 0
@@ -3401,6 +3427,7 @@ GameObject:
   - component: {fileID: 932359236}
   - component: {fileID: 932359235}
   - component: {fileID: 932359234}
+  - component: {fileID: 932359238}
   m_Layer: 5
   m_Name: usernameInputField (TMP)
   m_TagString: Untagged
@@ -3579,6 +3606,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 932359232}
   m_CullTransparentMesh: 1
+--- !u!114 &932359238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932359232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72182a2b25d374ddb9b23868d407bd3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &941383860
 GameObject:
   m_ObjectHideFlags: 0
@@ -4082,6 +4121,7 @@ GameObject:
   - component: {fileID: 1292823972}
   - component: {fileID: 1292823971}
   - component: {fileID: 1292823970}
+  - component: {fileID: 1292823974}
   m_Layer: 5
   m_Name: emailInputField (TMP)
   m_TagString: Untagged
@@ -4260,6 +4300,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1292823968}
   m_CullTransparentMesh: 1
+--- !u!114 &1292823974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1292823968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72182a2b25d374ddb9b23868d407bd3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1334579600
 GameObject:
   m_ObjectHideFlags: 0
@@ -4349,6 +4401,7 @@ GameObject:
   - component: {fileID: 1385844783}
   - component: {fileID: 1385844782}
   - component: {fileID: 1385844781}
+  - component: {fileID: 1385844785}
   m_Layer: 5
   m_Name: passwordInputField (TMP)
   m_TagString: Untagged
@@ -4527,6 +4580,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1385844779}
   m_CullTransparentMesh: 1
+--- !u!114 &1385844785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1385844779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72182a2b25d374ddb9b23868d407bd3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1395333519
 GameObject:
   m_ObjectHideFlags: 0
@@ -5637,7 +5702,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1824056787
 RectTransform:
   m_ObjectHideFlags: 0
