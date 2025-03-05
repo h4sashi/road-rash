@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class TrafficManager : MonoBehaviour
@@ -27,6 +28,8 @@ public class TrafficManager : MonoBehaviour
     List<CarStruct> LastmaCars;
 
     Player player;
+
+    [SerializeField] float stopDeccel;
 
     void Start()
     {
@@ -114,7 +117,9 @@ public class TrafficManager : MonoBehaviour
 
     private void SpawnLASTMA()
     {
-        Vector3 SpawnPoint = player.transform.position + Vector3.up * (WorldManager.worldSpeed * 0.75f);
+        float t = FindObjectOfType<WorldManager>().brakeTime;
+        float dist = (WorldManager.worldSpeed * t) + (0.5f * stopDeccel * t * t);
+        Vector3 SpawnPoint = player.transform.position + Vector3.up * dist;
 
         GameObject car = new GameObject("LASTMA");
         car.transform.position = SpawnPoint;

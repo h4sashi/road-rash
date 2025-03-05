@@ -36,6 +36,9 @@ public class CharacterSelector : MonoBehaviour
 
         // Assign submit button listener
         submitBTN.onClick.AddListener(SaveSelection);
+
+        avatarBTN[PlayerPrefs.GetInt("SELECTED_CHARACTER", 0)].onClick.Invoke();
+        vehicleBTN[PlayerPrefs.GetInt("SELECTED_VEHICLE", 0)].onClick.Invoke();
     }
 
     private void OnAvatarSelect(int _avatarIndex, Button clickedButton)
@@ -83,6 +86,6 @@ public class CharacterSelector : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("Selections Saved: Avatar " + avatarIndex + ", Vehicle " + vehicleIndex);
 
-        UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("LoadingScreen");
     }
 }

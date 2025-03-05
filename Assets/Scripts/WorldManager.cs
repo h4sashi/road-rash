@@ -21,17 +21,29 @@ public class WorldManager : MonoBehaviour
     public static float worldSpeed;
     public static float carsSpeed;
 
+    float stopTimer = 0;
+    [SerializeField] public float brakeTime;
+
+    float endWorldSpeed;
+    float endCarSpeed;
+
+
     void Start()
     {
-
+        stopTimer = 0;
     }
 
     void FixedUpdate()
     {
         if (GameStateManager.Singleton.isGameOver)
         {
-            worldSpeed = Mathf.Lerp(worldSpeed, 0, 1.5f * Time.fixedDeltaTime);
-            carsSpeed = Mathf.Lerp(carsSpeed, 0, 1.5f * Time.fixedDeltaTime);
+            stopTimer += Time.fixedDeltaTime;
+            stopTimer = Mathf.Clamp(stopTimer, 0, brakeTime);
+
+            Debug.Log(stopTimer);
+
+            worldSpeed = Mathf.Lerp(endCarSpeed, 0, stopTimer / brakeTime);
+            carsSpeed = Mathf.Lerp(endCarSpeed, 0, stopTimer / brakeTime);
         }
         else
         {
@@ -40,6 +52,12 @@ public class WorldManager : MonoBehaviour
             worldSpeed = scrollSpeed * multiplier;
             carsSpeed = scrollSpeed * carScrollSpeedRatio * multiplier;
         }
+
+        GameStateManager.OnGameOver += () =>
+        {
+            endCarSpeed = carsSpeed;
+            endWorldSpeed = worldSpeed;
+        };
 
         AssignRoadsByWeather();
         ScrollRoad(worldSpeed);

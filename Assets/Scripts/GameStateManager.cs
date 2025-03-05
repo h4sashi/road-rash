@@ -9,8 +9,9 @@ public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager Singleton { get; private set; }
     public static Action OnGameOver;
+    Player player;
 
-    int chances = 0;
+    int chances = 3;//Health
     int score;
 
     [DllImport("__Internal")]
@@ -23,6 +24,7 @@ public class GameStateManager : MonoBehaviour
 
     void Start()
     {
+        player = FindObjectOfType<Player>();
         ResetGame();
     }
 
@@ -43,6 +45,7 @@ public class GameStateManager : MonoBehaviour
     public void Warn()
     {
         chances--;
+        player.UpdatePlayerIcon();
 #if UNITY_EDITOR
 #else
         Vibrate(1000);
@@ -58,17 +61,12 @@ public class GameStateManager : MonoBehaviour
     {
         OnGameOver?.Invoke();
         isGameOver = true;
-        Invoke(nameof(ShowGameOverScreen), 3.1f);
+        LeaderboardManager.Singleton.SubmitScore(score);
+        Invoke(nameof(ShowGameOverScreen), 5f);
     }
     void ShowGameOverScreen()
     {
         GameplayUIManager.Singleton.ShowScreen(Screens.GameOver);
-
-        if (score > LeaderboardManager.Singleton.previousHighScore)
-        {
-            LeaderboardManager.Singleton.SubmitScore(score);
-        }
-
     }
 
     public void AddScore(int _score)
@@ -77,6 +75,7 @@ public class GameStateManager : MonoBehaviour
     }
 
     public int getScore => score;
+    public int getChancesLeft => chances;
 
     public void Reload()
     {
@@ -86,7 +85,7 @@ public class GameStateManager : MonoBehaviour
 
     public void Home()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Profiler");
         Time.timeScale = 1;
     }
 

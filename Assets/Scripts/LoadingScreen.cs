@@ -28,8 +28,8 @@ public class LoadingScreen : MonoBehaviour
             _loader.value = Mathf.Clamp01(timer / loadingDuration);
             yield return null;
         }
-        
+
         // Optional: Once loading is complete, load the next scene
-        // SceneManager.LoadScene("YourNextSceneName");
+        SceneManager.LoadScene("GameScene");
     }
 }

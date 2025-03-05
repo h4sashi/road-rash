@@ -20,6 +20,7 @@ ehthumbs.db
 *.pdb.meta
 *.pidb.meta
 sysinfo.txt
+*.zip
 
 # =============
 # IDE Generated

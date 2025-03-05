@@ -1,12 +1,13 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     public TextMeshProUGUI usernameText;
     public GameObject usernamePanel, characterPanel;
-    public TMP_InputField usernameInput;
+    public InputField usernameInput;
 
     void Start()
     {

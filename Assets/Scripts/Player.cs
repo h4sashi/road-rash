@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class Player : MonoBehaviour
@@ -16,25 +17,37 @@ public class Player : MonoBehaviour
     [SerializeField] Transform rayPoint;
     [SerializeField] float rayLength = 10f;
 
-    [SerializeField] Sprite[] sprites;
+    [SerializeField] Sprite[] carSprites;
+    [SerializeField] Sprite[] playerIconSprites;
     SpriteRenderer spriteRenderer;
+    [SerializeField] Image playerIcon;
+
+    Sprite[,] spriteArray;
 
     Transform HitCar;
-
-
 
     // Start is called before the first frame update
     void Start()
     {
+        spriteArray = new Sprite[carSprites.Length / 2, 2];
+        for (int i = 0; i < carSprites.Length; i++)
+        {
+            int y = i % 2;
+            int x = i / 2;
+            spriteArray[x, y] = carSprites[i];
+        }
+
         spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = sprites[WeatherManager.GetDayNight()];
+        UpdatePlayerSprite(WeatherManager.GetDayNight());
 
         WeatherManager.OnWeatherChange += (time) =>
         {
-            spriteRenderer.sprite = sprites[(int)time];
+            UpdatePlayerSprite((int)time);
         };
 
         targetLane = 1;
+
+        UpdatePlayerIcon();
     }
 
     // Update is called once per frame
@@ -113,5 +126,28 @@ public class Player : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.DrawRay(rayPoint.position, Vector3.up * WorldManager.Difficulty * rayLength);
+    }
+
+    private void UpdatePlayerSprite(int dayornight)
+    {
+        int selected = PlayerPrefs.GetInt("SELECTED_VEHICLE", 0);
+        spriteRenderer.sprite = spriteArray[selected, dayornight];
+
+        float sub = new float[] { 1f, 1.5f, 2.2f }[selected];
+        rayPoint.localPosition = new Vector3(0, dayornight == 0 ? sub : (spriteRenderer.bounds.size.y * 0.5f), 0);
+    }
+
+    public void UpdatePlayerIcon()
+    {
+        try
+        {
+            int leftChances = GameStateManager.Singleton.getChancesLeft;
+            playerIcon.sprite = playerIconSprites[PlayerPrefs.GetInt("SELECTED_CHARACTER", 0) * 4 + (3 - leftChances)];
+            playerIcon.SetNativeSize();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError(e.Message);
+        }
     }
 }
