@@ -23,7 +23,15 @@ public class LeaderboardManager : MonoBehaviour
     void Start()
     {
         // GetLeaderboard(); // Load main leaderboard
-        GetPlayerScore();
+       if (PlayFabClientAPI.IsClientLoggedIn()) 
+        {
+            Debug.Log("Player is already logged in.");
+            GetPlayerScore();
+        }
+        else
+        {
+            return;
+        }
     }
 
     public void SubmitScore(int score)

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class LoginManager : MonoBehaviour
 {
-    public GameObject LoginUI, RegisterUI, LoginContainer, loaderUI, smallLoginUI;
+    public GameObject LoginUI, RegisterUI, LoginContainer, loaderUI, smallLoginUI, startHolder;
 
     public TextMeshProUGUI registerStatus, loginStatus;
 

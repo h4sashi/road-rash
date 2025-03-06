@@ -61,7 +61,7 @@ public class PlayfabManager : MonoBehaviour
     {
         loginManager.loaderUI.SetActive(false); // Hide loader UI
         loginManager.LoginContainer.SetActive(false); // Hide login UI
-
+        loginManager.startHolder.SetActive(true); // Hide small login UI
         loginManager.loginStatus.text = "Login Successful!";
         Debug.Log("Login Successful! User ID: " + result.PlayFabId);
 
