@@ -21,6 +21,22 @@ public class LoginManager : MonoBehaviour
 
     public Toggle rememberMeToggle;
 
+    private void Awake()
+    {
+        if (PlayfabManager.Instance.isLoggedIn == true)
+        {
+            LoginContainer.SetActive(false); // Hide login UI
+            loaderUI.SetActive(false); // Hide loader UI
+            startHolder.SetActive(true); // Hide small login UI
+
+            Debug.Log("isLoggedIn = true");
+        }
+        else
+        {
+            return;
+        }
+    }
+
     public void Register()
     {
         RegisterUI.SetActive(true);

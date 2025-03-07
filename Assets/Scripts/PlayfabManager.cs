@@ -10,6 +10,7 @@ public class PlayfabManager : MonoBehaviour
 {
     public static PlayfabManager Instance;
     public LoginManager loginManager;
+    public bool isLoggedIn = false;
 
     private void Awake()
     {
@@ -43,6 +44,8 @@ public class PlayfabManager : MonoBehaviour
         if (scene.buildIndex == 0)
         {
             loginManager = GameObject.Find("LoginManager").GetComponent<LoginManager>();
+           
+
         }
     }
 
@@ -59,6 +62,8 @@ public class PlayfabManager : MonoBehaviour
 
     private void OnLoginSuccess(LoginResult result, bool rememberMe)
     {
+        isLoggedIn = true;
+
         loginManager.loaderUI.SetActive(false); // Hide loader UI
         loginManager.LoginContainer.SetActive(false); // Hide login UI
         loginManager.startHolder.SetActive(true); // Hide small login UI
@@ -112,29 +117,29 @@ public class PlayfabManager : MonoBehaviour
         Debug.LogError("Registration Failed: " + error.GenerateErrorReport());
     }
 
-   IEnumerator AutoLogin(float t)
-{
-    yield return new WaitForSeconds(t);
-
-    if (PlayerPrefs.GetInt("RememberMe", 0) == 1)
+    IEnumerator AutoLogin(float t)
     {
-        loginManager.LoginContainer.SetActive(false); // Hide login UI
-        loginManager.loaderUI.SetActive(true); // Show loader UI
+        yield return new WaitForSeconds(t);
 
-        string savedUsername = PlayerPrefs.GetString("SavedUsername", "");
-        string savedPassword = PlayerPrefs.GetString("SavedPassword", "");
-
-        if (!string.IsNullOrEmpty(savedUsername) && !string.IsNullOrEmpty(savedPassword))
+        if (PlayerPrefs.GetInt("RememberMe", 0) == 1)
         {
-            OnLogin(savedUsername, savedPassword, true);
-            yield break; // Stop execution if login proceeds
-        }
-    }
+            loginManager.LoginContainer.SetActive(false); // Hide login UI
+            loginManager.loaderUI.SetActive(true); // Show loader UI
 
-    // If auto-login is disabled or fails, show the login UI
-    loginManager.loaderUI.SetActive(false); // Hide loader UI
-    loginManager.smallLoginUI.SetActive(true); // Show login UI
-}
+            string savedUsername = PlayerPrefs.GetString("SavedUsername", "");
+            string savedPassword = PlayerPrefs.GetString("SavedPassword", "");
+
+            if (!string.IsNullOrEmpty(savedUsername) && !string.IsNullOrEmpty(savedPassword))
+            {
+                OnLogin(savedUsername, savedPassword, true);
+                yield break; // Stop execution if login proceeds
+            }
+        }
+
+        // If auto-login is disabled or fails, show the login UI
+        loginManager.loaderUI.SetActive(false); // Hide loader UI
+        loginManager.smallLoginUI.SetActive(true); // Show login UI
+    }
 
 
     public void SetUsername(string username)

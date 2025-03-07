@@ -9,6 +9,7 @@ public class SplashScreen : MonoBehaviour
     [SerializeField] Button startButton;
     [SerializeField] Slider loadingBar;
     [SerializeField] float loadTime;
+    public GameObject[] startHolder;
 
     void Start()
     {
@@ -17,6 +18,10 @@ public class SplashScreen : MonoBehaviour
         {
             startButton.gameObject.SetActive(false);
             loadingBar.gameObject.SetActive(true);
+            foreach (var item in startHolder)
+            {
+                item.SetActive(false);
+            }
             StartCoroutine(Load());
         });
 

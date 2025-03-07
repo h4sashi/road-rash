@@ -26,6 +26,17 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void BackStart()
+    {
+        usernamePanel.SetActive(true);
+        characterPanel.SetActive(false);
+    }
+
+    public void BackSubmit()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
+    }
+
     public void StartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
