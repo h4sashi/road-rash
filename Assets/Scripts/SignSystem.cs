@@ -43,6 +43,8 @@ public class SignSystem : MonoBehaviour
         signButton.gameObject.SetActive(false);
 
         ToggleButtonsOff(immediate: true);
+
+        UpdateSign();
     }
 
     void Update()
@@ -51,7 +53,7 @@ public class SignSystem : MonoBehaviour
         signTimer = player.GetHitDistanceRatio();
         if (signTimer < 1f && lastSignTimer >= 1f)
         {
-            UpdateSign();
+            ToggleOnInteractible();
         }
         else if (signTimer <= 0 && lastSignTimer > 0)
         {
@@ -59,6 +61,7 @@ public class SignSystem : MonoBehaviour
             crashIndicator.Pop(false);
             GameStateManager.Singleton.Warn();
             player.RemoveHitCar();
+            UpdateSign();
         }
 
         if (buttonIndicatorHolder)
@@ -84,12 +87,18 @@ public class SignSystem : MonoBehaviour
             GameStateManager.Singleton.Warn();
             player.RemoveHitCar();
         }
+
+        UpdateSign();
     }
 
     private void UpdateSign()
     {
         displayingSign = (displayingSign + Random.Range(0, signs.Length)) % signs.Length;
         signage.sprite = signs[displayingSign];
+    }
+
+    public void ToggleOnInteractible()
+    {
         ToggleButtonsOn();
         StartCoroutine(AutoClick());
     }
