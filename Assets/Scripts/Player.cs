@@ -125,7 +125,7 @@ public class Player : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.DrawRay(rayPoint.position, Vector3.up * WorldManager.Difficulty * rayLength);
+        Gizmos.DrawRay(rayPoint.position, Vector3.up * rayLength);
     }
 
     private void UpdatePlayerSprite(int dayornight)

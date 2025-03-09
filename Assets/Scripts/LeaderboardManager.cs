@@ -23,7 +23,7 @@ public class LeaderboardManager : MonoBehaviour
     void Start()
     {
         // GetLeaderboard(); // Load main leaderboard
-       if (PlayFabClientAPI.IsClientLoggedIn()) 
+        if (PlayFabClientAPI.IsClientLoggedIn())
         {
             Debug.Log("Player is already logged in.");
             GetPlayerScore();
@@ -36,6 +36,8 @@ public class LeaderboardManager : MonoBehaviour
 
     public void SubmitScore(int score)
     {
+        if (!PlayFabClientAPI.IsClientLoggedIn()) { Debug.Log("Client not logged in..."); return; }
+
         var request = new UpdatePlayerStatisticsRequest
         {
             Statistics = new List<StatisticUpdate>

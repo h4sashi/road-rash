@@ -106,7 +106,7 @@ public class SignSystem : MonoBehaviour
         {
             item.gameObject.SetActive(false);
         }
-        signage.gameObject.SetActive(false);
+        //signage.gameObject.SetActive(false);
     }
 
     private void ToggleButtonsOn()
@@ -122,7 +122,7 @@ public class SignSystem : MonoBehaviour
             item.interactable = true;
         }
 
-        signage.gameObject.SetActive(true);
+        //signage.gameObject.SetActive(true);
     }
 
     void ToggleButtonsInteractability(bool flag)
