@@ -10,6 +10,8 @@ public class MenuManager : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject mainMenuPanel;
 
+    public Animator scoreboardAnim;
+
 public void StartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -18,7 +20,7 @@ public void StartGame()
     {
         leaderboardPanel.SetActive(true);
         mainMenuPanel.SetActive(false);
-
+        scoreboardAnim.SetTrigger("Open");
         LeaderboardManager.Singleton.GetLeaderboard();
     }
 
@@ -36,9 +38,10 @@ public void StartGame()
 
     public void MainMenu()
     {
-        leaderboardPanel.SetActive(false);
-        creditsPanel.SetActive(false);
-        settingsPanel.SetActive(false);
+        scoreboardAnim.SetTrigger("Close");
+        // leaderboardPanel.SetActive(false);
+        // creditsPanel.SetActive(false);
+        // settingsPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
     }
 

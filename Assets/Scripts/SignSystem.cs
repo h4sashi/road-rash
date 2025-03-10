@@ -80,7 +80,7 @@ public class SignSystem : MonoBehaviour
         if (clicked == displayingSign)
         {
             player.SwitchLane();
-            GameStateManager.Singleton.AddScore(100);
+            GameStateManager.Singleton.AddScore(5);
         }
         else
         {
