@@ -62,7 +62,7 @@ public class GameStateManager : MonoBehaviour
         OnGameOver?.Invoke();
         isGameOver = true;
         LeaderboardManager.Singleton.SubmitScore(score);
-        Invoke(nameof(ShowGameOverScreen), 5f);
+        Invoke(nameof(ShowGameOverScreen), FindObjectOfType<WorldManager>().brakeTime + 0.75f);
     }
     void ShowGameOverScreen()
     {

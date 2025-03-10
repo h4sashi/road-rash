@@ -29,8 +29,6 @@ public class TrafficManager : MonoBehaviour
 
     Player player;
 
-    [SerializeField] float stopDeccel;
-
     void Start()
     {
         player = GameObject.FindObjectOfType<Player>();
@@ -65,6 +63,8 @@ public class TrafficManager : MonoBehaviour
     float lastHeight;
     private void SpawnCar(int turn)
     {
+        if (GameStateManager.Singleton.isGameOver) return;
+
         int day_night = WeatherManager.GetDayNight();
         int index = Random.Range(0, vehicles.Length / 2);
 
@@ -117,9 +117,18 @@ public class TrafficManager : MonoBehaviour
 
     private void SpawnLASTMA()
     {
-        float t = FindObjectOfType<WorldManager>().brakeTime;
-        float dist = (WorldManager.worldSpeed * t) + (0.5f * stopDeccel * t * t);
+        var worldM = FindObjectOfType<WorldManager>();
+
+        var sides = new int[2] { -4, 4 };
+        int side = sides.Where(x => Mathf.Abs(x - player.transform.position.x) <= 4)
+        .OrderBy(x => Random.value)
+        .First();
+
+        float stopDeccel = WorldManager.worldSpeed / worldM.brakeTime;
+        float dist = Mathf.Pow(WorldManager.worldSpeed, 2) / (2 * stopDeccel) + 7.5f;
+
         Vector3 SpawnPoint = player.transform.position + Vector3.up * dist;
+        SpawnPoint.x = side;
 
         GameObject car = new GameObject("LASTMA");
         car.transform.position = SpawnPoint;
@@ -128,7 +137,7 @@ public class TrafficManager : MonoBehaviour
         int index = WeatherManager.GetDayNight();
         spriteRenderer.sprite = LASTMAVehicles[index];
 
-        var overlapped = Cars.Where(x => Mathf.Abs(x.transform.position.x - car.transform.position.x) < 1).ToList();
+        var overlapped = Cars.Where(x => Mathf.Abs(x.transform.position.x - side) < 1).ToList();
         overlapped.ForEach(x => x.transform.gameObject.SetActive(false));
 
         CarStruct carS = new CarStruct
@@ -139,6 +148,8 @@ public class TrafficManager : MonoBehaviour
             spriteIndex = index,
         };
         LastmaCars.Add(carS);
+
+        player.MoveToLane(side);
     }
 
     private void UpdateSpawnLane()

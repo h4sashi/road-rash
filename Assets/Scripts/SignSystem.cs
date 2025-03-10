@@ -146,6 +146,7 @@ public class SignSystem : MonoBehaviour
     IEnumerator AutoClick()
     {
         //if (clicks < 30)
+        //if (clicks < 5)
         if (clicks < 0)
         {
             yield return new WaitForSeconds(Time.deltaTime * 3);

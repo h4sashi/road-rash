@@ -48,11 +48,18 @@ public class Player : MonoBehaviour
         targetLane = 1;
 
         UpdatePlayerIcon();
+
+        GameStateManager.OnGameOver += () =>
+        {
+            transform.rotation = Quaternion.identity;
+        };
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        //if (GameStateManager.Singleton.isGameOver) return;
+
         transform.position = Vector3.MoveTowards(transform.position, new Vector3(lanes[targetLane], transform.position.y, transform.position.z), 20 * Time.fixedDeltaTime);
         float orientation = (lanes[targetLane] - transform.position.x) / 4 * -30f;
 
@@ -79,9 +86,15 @@ public class Player : MonoBehaviour
         targetLane = freeLane;
     }
 
+    public void MoveToLane(int xPos)
+    {
+        targetLane = lanes.ToList().IndexOf(xPos);
+    }
+
     public float GetHitDistanceRatio()
     {
-        return hitDistance / (rayLength * WorldManager.Difficulty);
+        //return hitDistance / (rayLength * WorldManager.Difficulty);
+        return hitDistance / rayLength;
     }
 
     bool Blocked(out int freelane, out float distance)

@@ -3488,7 +3488,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rayPoint: {fileID: 1448995547}
-  rayLength: 8.5
+  rayLength: 10
   carSprites:
   - {fileID: 21300000, guid: ad5eddae5ba6b1f4f934e828c5ab238f, type: 3}
   - {fileID: 21300000, guid: 95a02550b2287324ab42071c937b15f5, type: 3}
@@ -9005,7 +9005,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 800de1f6d6c474b49bf66f274bd9c63c, type: 3}
   - {fileID: 21300000, guid: 82e716ff24d045c44b8ed11a858b41c8, type: 3}
   CarSpacing: 8
-  stopDeccel: -7.5
 --- !u!4 &1672586105
 Transform:
   m_ObjectHideFlags: 0
@@ -10480,6 +10479,7 @@ MonoBehaviour:
   scrollSpeed: 20
   carScrollSpeedRatio: 0.3
   brakeTime: 4
+  deccelRate: 7.5
 --- !u!4 &1983123480
 Transform:
   m_ObjectHideFlags: 0

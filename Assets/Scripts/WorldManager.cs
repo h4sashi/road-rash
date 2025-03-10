@@ -22,11 +22,11 @@ public class WorldManager : MonoBehaviour
     public static float carsSpeed;
 
     float stopTimer = 0;
-    [SerializeField] public float brakeTime;
+    public float brakeTime;
+    public float deccelRate = 7.5f;
 
     float endWorldSpeed;
     float endCarSpeed;
-
 
     void Start()
     {
@@ -37,24 +37,20 @@ public class WorldManager : MonoBehaviour
     {
         if (GameStateManager.Singleton.isGameOver)
         {
-            stopTimer += Time.fixedDeltaTime;
-            stopTimer = Mathf.Clamp(stopTimer, 0, brakeTime);
-
-            Debug.Log(stopTimer);
-
-            worldSpeed = Mathf.Lerp(endCarSpeed, 0, stopTimer / brakeTime);
-            carsSpeed = Mathf.Lerp(endCarSpeed, 0, stopTimer / brakeTime);
+            worldSpeed -= deccelRate * Time.fixedDeltaTime;
+            worldSpeed = Mathf.Clamp(worldSpeed, 0, worldSpeed);
         }
         else
         {
             multiplier = Mathf.Clamp(GameStateManager.Singleton.getScore / 1000f, 1, 3.5f);
             Difficulty = multiplier;
             worldSpeed = scrollSpeed * multiplier;
-            carsSpeed = scrollSpeed * carScrollSpeedRatio * multiplier;
         }
+        carsSpeed = worldSpeed * carScrollSpeedRatio;
 
         GameStateManager.OnGameOver += () =>
         {
+            deccelRate = worldSpeed / brakeTime;
             endCarSpeed = carsSpeed;
             endWorldSpeed = worldSpeed;
         };
@@ -83,5 +79,10 @@ public class WorldManager : MonoBehaviour
         {
             road.sprite = RoadSprites[dayNight];
         }
+    }
+
+    public float getStopTime
+    {
+        get { return worldSpeed / deccelRate; }
     }
 }

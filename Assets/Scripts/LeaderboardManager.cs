@@ -66,14 +66,20 @@ public class LeaderboardManager : MonoBehaviour
 
     public void GetLeaderboard()
     {
-        var request = new GetLeaderboardRequest
+        try
         {
-            StatisticName = leaderboardName,
-            StartPosition = 0, // Get from top rank
-            MaxResultsCount = 12 // Get top 12 players
-        };
-
-        PlayFabClientAPI.GetLeaderboard(request, OnLeaderboardReceived, OnLeaderboardFailed);
+            var request = new GetLeaderboardRequest
+            {
+                StatisticName = leaderboardName,
+                StartPosition = 0, // Get from top rank
+                MaxResultsCount = 12 // Get top 12 players
+            };
+            PlayFabClientAPI.GetLeaderboard(request, OnLeaderboardReceived, OnLeaderboardFailed);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.Message);
+        }
     }
 
     void OnLeaderboardReceived(GetLeaderboardResult result)
