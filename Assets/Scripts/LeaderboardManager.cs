@@ -91,20 +91,22 @@ public class LeaderboardManager : MonoBehaviour
             GameObject newEntry = Instantiate(positionHolderPrefab, positionTransform);
             LeaderboardEntryUI entryUI = newEntry.GetComponent<LeaderboardEntryUI>();
 
+            string playerName = string.IsNullOrEmpty(entry.DisplayName) ? "Guest" : entry.DisplayName;
+
             if (entryUI != null)
             {
-                entryUI.SetLeaderboardEntry(entry.Position + 1, entry.DisplayName, entry.StatValue, false);
+                entryUI.SetLeaderboardEntry(entry.Position + 1, playerName, entry.StatValue, false);
             }
 
             if (entry.PlayFabId == PlayFabSettings.staticPlayer.PlayFabId)
             {
-                playerRank = entry.Position; // Store player's rank for later
+                playerRank = entry.Position; // Store player's rank
             }
         }
 
-        // Wait 2.5 seconds, then load player's nearby leaderboard
         StartCoroutine(LoadPlayerLeaderboardAfterDelay(2.5f));
     }
+
 
     void OnLeaderboardFailed(PlayFabError error)
     {
@@ -117,25 +119,63 @@ public class LeaderboardManager : MonoBehaviour
         GetPlayerLeaderboard();
     }
 
-    void GetPlayerLeaderboard()
+   void GetPlayerLeaderboard()
+{
+    if (playerRank != -1)
     {
-        if (playerRank == -1)
-        {
-            Debug.Log("Player rank not found in the main leaderboard.");
-            return;
-        }
-
-        int startPos = Mathf.Max(0, playerRank - 5); // Get ±5 players around player's rank
+        // Player is already in the main leaderboard, so just fetch nearby players
+        int startPos = Mathf.Max(0, playerRank - 4); // Get ±4 players around player's rank
 
         var request = new GetLeaderboardRequest
         {
             StatisticName = leaderboardName,
             StartPosition = startPos,
-            MaxResultsCount = 10
+            MaxResultsCount = 8
         };
 
         PlayFabClientAPI.GetLeaderboard(request, OnPlayerLeaderboardReceived, OnLeaderboardFailed);
     }
+    else
+    {
+        // Player is NOT in the main leaderboard; fetch their exact rank
+        GetExactPlayerRank();
+    }
+}
+
+void GetExactPlayerRank()
+{
+    var request = new GetLeaderboardAroundPlayerRequest
+    {
+        StatisticName = leaderboardName,
+        MaxResultsCount = 8 // Get 8 closest players
+    };
+
+    PlayFabClientAPI.GetLeaderboardAroundPlayer(request, OnExactPlayerRankReceived, OnLeaderboardFailed);
+}
+
+void OnExactPlayerRankReceived(GetLeaderboardAroundPlayerResult result)
+{
+    ClearLeaderboard();
+
+    foreach (var entry in result.Leaderboard)
+    {
+        GameObject newEntry = Instantiate(positionHolderPrefab, positionTransform);
+        LeaderboardEntryUI entryUI = newEntry.GetComponent<LeaderboardEntryUI>();
+
+        if (entryUI != null)
+        {
+            bool isPlayer = (entry.PlayFabId == PlayFabSettings.staticPlayer.PlayFabId);
+            entryUI.SetLeaderboardEntry(entry.Position + 1, entry.DisplayName, entry.StatValue, isPlayer);
+        }
+
+        if (entry.PlayFabId == PlayFabSettings.staticPlayer.PlayFabId)
+        {
+            playerRank = entry.Position;
+            Debug.Log($"Player's Exact Rank: {playerRank + 1}");
+        }
+    }
+}
+
 
     void OnPlayerLeaderboardReceived(GetLeaderboardResult result)
     {
