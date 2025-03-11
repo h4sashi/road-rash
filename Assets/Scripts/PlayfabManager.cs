@@ -1,15 +1,16 @@
 using System.Collections;
 using PlayFab;
 using PlayFab.ClientModels;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayfabManager : MonoBehaviour
 {
     public static PlayfabManager Instance;
-    public LoginManager loginManager;
     public bool isLoggedIn = false;
+
+    private LoginManager loginManager;
+
 
     private void Awake()
     {
@@ -26,10 +27,11 @@ public class PlayfabManager : MonoBehaviour
 
     private void OnEnable()
     {
+        // PlayerPrefs.DeleteAll();
         Debug.Log("PlayfabManager Started!");
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        StartCoroutine(AutoLogin(1.3f)); // Attempt auto-login on startup
+        StartCoroutine(AutoLogin(1.3f));
     }
 
     private void OnDestroy()
@@ -42,18 +44,14 @@ public class PlayfabManager : MonoBehaviour
         if (scene.buildIndex == 0)
         {
             loginManager = GameObject.Find("LoginManager").GetComponent<LoginManager>();
+
         }
     }
 
-    public void OnLogin(string email, bool rememberMe)
+    public void OnLogin()
     {
-        string customId = PlayerPrefs.GetString("CustomID", ""); // Get stored CustomID
-
-        if (string.IsNullOrEmpty(customId))
-        {
-            Debug.LogError("No CustomID found! User may need to register first.");
-            return;
-        }
+        Debug.Log("Logging In Player..");
+        string customId = GetOrCreateCustomId();
 
         var request = new LoginWithCustomIDRequest
         {
@@ -65,132 +63,44 @@ public class PlayfabManager : MonoBehaviour
         {
             isLoggedIn = true;
             Debug.Log("Login Successful! User ID: " + result.PlayFabId);
+
             loginManager.loaderUI.SetActive(false); // Hide loader UI
-        loginManager.LoginContainer.SetActive(false); // Hide login UI
-        loginManager.startHolder.SetActive(true); // Hide small login UI
-        loginManager.loginStatus.text = "Login Successful!";
+            loginManager.startHolder.SetActive(true); // Hide small login UI
 
-
-            if (rememberMe)
-            {
-                PlayerPrefs.SetString("SavedEmail", email);
-                PlayerPrefs.SetInt("RememberMe", 1);
-            }
-            else
-            {
-                PlayerPrefs.DeleteKey("SavedEmail");
-                PlayerPrefs.SetInt("RememberMe", 0);
-            }
-        }, OnLoginFailure);
-    }
-
-
-
-    private void OnLoginSuccess(LoginResult result, string email, bool rememberMe)
-    {
-        isLoggedIn = true;
-        loginManager.loaderUI.SetActive(false);
-        loginManager.LoginContainer.SetActive(false);
-        loginManager.startHolder.SetActive(true);
-        loginManager.loginStatus.text = "Login Successful!";
-        Debug.Log("Login Successful! User ID: " + result.PlayFabId);
-
-        if (rememberMe)
+        }, error =>
         {
-            PlayerPrefs.SetString("SavedEmail", email);
-            PlayerPrefs.SetInt("RememberMe", 1);
-        }
-        else
-        {
-            PlayerPrefs.DeleteKey("SavedEmail");
-            PlayerPrefs.SetInt("RememberMe", 0);
-        }
+            Debug.LogWarning("Login Failed: " + error.GenerateErrorReport());
+            if (error.Error == PlayFabErrorCode.AccountNotFound)
+            {
+                Debug.Log("Account not found, attempting registration...");
+                OnRegistration(); // Auto-register if account doesn't exist
+            }
+        });
     }
 
-    private void OnLoginFailure(PlayFabError error)
+    public void OnRegistration()
     {
-        loginManager.loginStatus.text = "Login Failed: " + error.ErrorMessage;
-        Debug.LogError("Login Failed: " + error.GenerateErrorReport());
-    }
-
-    public void OnRegistration(string email)
-    {
-        PlayerPrefs.DeleteAll();
-        loginManager.registerStatus.text = "Registering...";
-
+        Debug.Log("Registering Player..");
         string customId = GetOrCreateCustomId();
-
         var request = new LoginWithCustomIDRequest
         {
             CustomId = customId,
             CreateAccount = true
         };
-        
 
         PlayFabClientAPI.LoginWithCustomID(request, result =>
         {
 
-            Debug.Log("Registration Successful with Device ID: " + result.PlayFabId);
-            loginManager.registerStatus.text = "Registration Successful!.. Logging In";
-            LinkEmailToAccount(email); // Link email after successful registration
-        }, OnRegistrationFailure);
-    }
+            Debug.Log("Registration & Login Successful! User ID: " + result.PlayFabId);
+            OnLogin();
 
-    private void CheckAndLinkEmail(string email)
-    {
-        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), result =>
-        {
-            // Check if an email is already linked
-            if (!string.IsNullOrEmpty(result.AccountInfo.PrivateInfo.Email))
-            {
-                Debug.Log("Email already linked: " + result.AccountInfo.PrivateInfo.Email);
-                loginManager.registerStatus.text = "Registration Successful!";
-                loginManager.smallLoginUI.SetActive(false);
-                OnLogin(email, false); // Proceed with login
-            }
-            else
-            {
-                LinkEmailToAccount(email); // If not linked, link the email
-            }
         }, error =>
         {
-            Debug.LogError("Failed to check account info: " + error.GenerateErrorReport());
-            loginManager.registerStatus.text = "Error checking email link status!";
+            Debug.LogError("Registration Failed: " + error.GenerateErrorReport());
         });
     }
 
-
-    // Links the provided email to the PlayFab account
-    private void LinkEmailToAccount(string email)
-    {
-        var request = new AddUsernamePasswordRequest
-        {
-            Email = email,
-            Username = email.Split('@')[0], // Create a username from email prefix
-            Password = System.Guid.NewGuid().ToString() // Generate a random password (not needed for login)
-        };
-
-        PlayFabClientAPI.AddUsernamePassword(request, result =>
-        {
-            loginManager.registerStatus.text = "Registration Successful!";
-            Debug.Log("Email Linked Successfully!");
-            loginManager.smallLoginUI.SetActive(false);
-            OnLogin(email, false); // Auto-login after linking email
-        }, error =>
-        {
-            Debug.LogError("Failed to link email: " + error.GenerateErrorReport());
-            loginManager.registerStatus.text = "Email linking failed: " + error.ErrorMessage;
-        });
-    }
-
-
-    IEnumerator StartingLogin(string _email, float t)
-    {
-        yield return new WaitForSeconds(t);
-        OnLogin(_email, false);
-    }
-
-    public string GetOrCreateCustomId()
+    private string GetOrCreateCustomId()
     {
         if (!PlayerPrefs.HasKey("CustomID"))
         {
@@ -201,43 +111,18 @@ public class PlayfabManager : MonoBehaviour
         return PlayerPrefs.GetString("CustomID");
     }
 
-    public string GenerateCustomId()
+    private string GenerateCustomId()
     {
         return SystemInfo.deviceUniqueIdentifier + "_" + System.Guid.NewGuid().ToString();
-    }
-
-
-
-    private void OnRegistrationFailure(PlayFabError error)
-    {
-        loginManager.registerStatus.text = "Registration Failed: " + error.ErrorMessage;
-        Debug.LogError("Registration Failed: " + error.GenerateErrorReport());
     }
 
     IEnumerator AutoLogin(float t)
     {
         yield return new WaitForSeconds(t);
-
-        if (PlayerPrefs.GetInt("RememberMe", 0) == 1)
-        {
-            loginManager.LoginContainer.SetActive(false); // Hide login UI
-            loginManager.loaderUI.SetActive(true); // Show loader UI
-
-            string savedEmail = PlayerPrefs.GetString("SavedEmail", "");
-
-            if (!string.IsNullOrEmpty(savedEmail))
-            {
-                OnLogin(savedEmail, true);
-                yield break; // Stop execution if login proceeds
-            }
-        }
-
-        // If auto-login fails, show login UI
-        loginManager.loaderUI.SetActive(false);
-        loginManager.smallLoginUI.SetActive(true);
+        OnLogin(); // Auto-login or register if necessary
     }
 
-
+    // ✅ SET USERNAME
     public void SetUsername(string username)
     {
         var request = new UpdateUserTitleDisplayNameRequest
@@ -248,12 +133,14 @@ public class PlayfabManager : MonoBehaviour
         PlayFabClientAPI.UpdateUserTitleDisplayName(request, result =>
         {
             Debug.Log("Display Name updated to: " + result.DisplayName);
+            PlayerPrefs.SetString("NAME", result.DisplayName);
 
             // Update UIManager elements
             UIManager uiManager = FindObjectOfType<UIManager>();
             if (uiManager != null)
             {
                 uiManager.usernameText.text = result.DisplayName; // Show updated username
+                Debug.Log("Username is ="+result.DisplayName);
                 uiManager.usernamePanel.SetActive(false); // Hide username input panel
                 uiManager.characterPanel.SetActive(true); // Show character selection panel
             }
@@ -261,6 +148,7 @@ public class PlayfabManager : MonoBehaviour
         }, error => Debug.LogError("Failed to update Display Name: " + error.GenerateErrorReport()));
     }
 
+    // ✅ FETCH USERNAME
     public void FetchUsername()
     {
         PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), result =>

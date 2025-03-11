@@ -38,14 +38,14 @@ public class LoginManager : MonoBehaviour
         LoginUI.SetActive(true);
     }
 
-    public void OnLogin()
-    {
-        bool rememberMe = rememberMeToggle.isOn;
-        PlayfabManager.Instance.OnLogin(loginEmail.text, rememberMe);
-    }
+    // public void OnLogin()
+    // {
+    //     bool rememberMe = rememberMeToggle.isOn;
+    //     PlayfabManager.Instance.OnLogin(loginEmail.text, rememberMe);
+    // }
 
-    public void OnRegistration()
-    {
-        PlayfabManager.Instance.OnRegistration(registrationEmail.text);
-    }
+    // public void OnRegistration()
+    // {
+    //     PlayfabManager.Instance.OnRegistration(registrationEmail.text);
+    // }
 }
