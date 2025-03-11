@@ -19,6 +19,9 @@ public class GameStateManager : MonoBehaviour
 
     void Awake()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+
         Singleton = this;
     }
 
@@ -61,6 +64,9 @@ public class GameStateManager : MonoBehaviour
     {
         OnGameOver?.Invoke();
         isGameOver = true;
+
+        TutorialManager.Singleton.TriggerTutorial(3);
+
         LeaderboardManager.Singleton.SubmitScore(score);
         Invoke(nameof(ShowGameOverScreen), FindObjectOfType<WorldManager>().brakeTime + 0.75f);
     }

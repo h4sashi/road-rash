@@ -10,10 +10,11 @@ public class GameOverScreen : MonoBehaviour
     public Image Sprite;
     public TextMeshProUGUI Header;
     public TextMeshProUGUI Note;
-    public AnimalSignsSO animalSigns;
+    //public AnimalSignsSO animalSigns;
+    public AnimalSign[] animalSigns;
     void OnEnable()
     {
-        var sign = animalSigns.getSign();
+        var sign = animalSigns[Random.Range(0, animalSigns.Length)];
 
         if (sign.Heading.Length > 0)
         {

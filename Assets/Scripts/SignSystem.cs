@@ -54,6 +54,7 @@ public class SignSystem : MonoBehaviour
         if (signTimer < 1f && lastSignTimer >= 1f)
         {
             ToggleOnInteractible();
+            TutorialManager.Singleton.TriggerTutorial(1);
         }
         else if (signTimer <= 0 && lastSignTimer > 0)
         {
@@ -62,6 +63,8 @@ public class SignSystem : MonoBehaviour
             GameStateManager.Singleton.Warn();
             player.RemoveHitCar();
             UpdateSign();
+
+            TutorialManager.Singleton.TriggerTutorial(2);
         }
 
         if (buttonIndicatorHolder)
@@ -70,6 +73,7 @@ public class SignSystem : MonoBehaviour
 
     private void CheckClickedSign(int clicked)
     {
+        TutorialManager.Singleton.ClosePage();
         ToggleButtonsOff();
 
         foreach (var item in signChoiceIndicators)
@@ -84,8 +88,9 @@ public class SignSystem : MonoBehaviour
         }
         else
         {
-            GameStateManager.Singleton.Warn();
-            player.RemoveHitCar();
+            //GameStateManager.Singleton.Warn();
+            //player.RemoveHitCar();
+            //TutorialManager.Singleton.TriggerTutorial(2);
         }
 
         UpdateSign();
