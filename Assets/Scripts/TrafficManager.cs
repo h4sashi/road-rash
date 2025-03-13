@@ -104,6 +104,15 @@ public class TrafficManager : MonoBehaviour
         car.transform.position = new Vector3(lanes[lane], 25 + lastHeight);
         car.transform.localScale = new Vector3(Mathf.Sign(lanes[lane]), 1, 1);
 
+        if (isStatic)
+        {
+            var distanceToPlayer = Mathf.Abs(car.transform.position.y - player.getRayPos.y);
+            var time = distanceToPlayer / WorldManager.carsSpeed;
+
+            var preferredDist = WorldManager.worldSpeed * time;
+            car.transform.position += Vector3.up * (preferredDist - distanceToPlayer);
+        }
+
         var collider = car.AddComponent<BoxCollider2D>();
         collider.size = spriteRenderer.bounds.size;
 

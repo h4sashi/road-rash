@@ -163,4 +163,6 @@ public class Player : MonoBehaviour
             Debug.LogError(e.Message);
         }
     }
+
+    public Vector3 getRayPos => rayPoint.position;
 }
