@@ -12,35 +12,36 @@ public class MenuManager : MonoBehaviour
 
     public Animator scoreboardAnim, creditsAnim, settingsAnim;
 
-public void StartGame()
+    public void StartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
+    
     public void Leaderboard()
     {
         mainMenuPanel.SetActive(false);
-        scoreboardAnim.SetTrigger("Open");
+        scoreboardAnim.SetBool("isOpen", true);
         LeaderboardManager.Singleton.GetLeaderboard();
     }
 
     public void Credits()
     {
-        creditsAnim.SetTrigger("Open");
+        creditsAnim.SetBool("isOpen", true);
         mainMenuPanel.SetActive(false);
     }
 
     public void Settings()
     {
-        settingsAnim.SetTrigger("Open");
+        settingsAnim.SetBool("isOpen", true);
         mainMenuPanel.SetActive(false);
     }
 
     public void MainMenu()
     {
-        scoreboardAnim.SetTrigger("Close");
-        creditsAnim.SetTrigger("Close");
-        settingsAnim.SetTrigger("Close");
-      
+        scoreboardAnim.SetBool("isOpen", !true);
+        creditsAnim.SetBool("isOpen", !true);
+        settingsAnim.SetBool("isOpen", !true);
+
         // settingsPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
     }
