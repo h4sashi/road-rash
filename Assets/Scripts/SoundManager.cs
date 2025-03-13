@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    public static SoundManager instance;
+    public static SoundManager Instance;
 
     public Sound[] sounds;
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
@@ -37,8 +37,10 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void Play(string soundName)
+    public void Play(string soundName, bool sfx = false)
     {
+        if (sfx && !Settings.sfxOn) return;
+
         Sound s = System.Array.Find(sounds, sound => sound.name == soundName);
         if (s == null)
         {

@@ -34,7 +34,8 @@ public class SignChoiceIndicator : MonoBehaviour
         while (elapsed < time)
         {
             elapsed += Time.deltaTime;
-            alpha = Mathf.Lerp(1, 0, Mathf.Abs(elapsed / time - 0.5f) * 2);
+            //alpha = Mathf.Lerp(1, 0, Mathf.Abs(elapsed / time - 0.5f) * 2);
+            alpha = Mathf.Lerp(1, 0, Mathf.Sqrt(elapsed / time));
 
             spriteRenderer.color = new Color(spriteRenderer.color.r,
             spriteRenderer.color.g, spriteRenderer.color.b, alpha);

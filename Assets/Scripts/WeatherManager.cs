@@ -12,7 +12,6 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] private WeatherType weatherType;
     static int weather = 0;
     int lastweather;
-
     float weatherTimer = 0;
 
     public static Action<WeatherType> OnWeatherChange;
@@ -36,7 +35,7 @@ public class WeatherManager : MonoBehaviour
         if (!GameStateManager.Singleton.isGameOver)
         {
             weatherTimer += Time.deltaTime;
-            if (weatherTimer >= UnityEngine.Random.Range(10f, 15f))
+            if (weatherTimer >= UnityEngine.Random.Range(45f, 50f))
             {
                 weatherType = (WeatherType)((weather + 1) % 2);
                 weatherTimer = 0;
@@ -47,5 +46,10 @@ public class WeatherManager : MonoBehaviour
     public static int GetDayNight()
     {
         return weather;
+    }
+
+    public void levelUpWeather()
+    {
+        weatherType = (WeatherType)((weather + 1) % 2);
     }
 }

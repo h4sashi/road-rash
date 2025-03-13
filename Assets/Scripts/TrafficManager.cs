@@ -29,6 +29,8 @@ public class TrafficManager : MonoBehaviour
     List<CarStruct> Obs;
     List<CarStruct> LastmaCars;
 
+    bool canSpawnObs;
+
     Player player;
 
     void Start()
@@ -44,6 +46,7 @@ public class TrafficManager : MonoBehaviour
         Cars = new List<CarStruct>();
         Obs = new List<CarStruct>();
         LastmaCars = new List<CarStruct>();
+
         Spawn();
     }
 
@@ -53,6 +56,23 @@ public class TrafficManager : MonoBehaviour
         {
             Spawn();
         }
+
+        if (Cars.Count > 10)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                Destroy(Cars[i].transform.gameObject);
+            }
+            Cars.RemoveRange(0, 6);
+        }
+        if (Obs.Count > 10)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                Destroy(Obs[i].transform.gameObject);
+            }
+            Obs.RemoveRange(0, 6);
+        }
     }
 
     void Spawn()
@@ -60,10 +80,14 @@ public class TrafficManager : MonoBehaviour
         SpawnCar(0);
         SpawnCar(1);
         UpdateSpawnLane();
+        canSpawnObs = true;
     }
 
     int lastLane = 0;
     float lastHeight;
+    bool wasStatic;
+    Vector3 staticSupposedPosition;
+
     private void SpawnCar(int turn)
     {
         if (GameStateManager.Singleton.isGameOver) return;
@@ -82,7 +106,7 @@ public class TrafficManager : MonoBehaviour
             lastLane = lane;
         }
 
-        bool isStatic = ((Random.Range(0, 1000) % 3) == 0) && (lane != 1);
+        bool isStatic = ((Random.Range(0, 1000) % 3) == 0) && (lane != 1) && canSpawnObs;
 
         int day_night = WeatherManager.GetDayNight();
         int index = Random.Range(0, vehicles.Length / 2);
@@ -101,30 +125,42 @@ public class TrafficManager : MonoBehaviour
         var spriteRenderer = car.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = carSprite;
 
-        car.transform.position = new Vector3(lanes[lane], 25 + lastHeight);
+        car.transform.position = new Vector3(lanes[lane], 25 + (lastHeight + spriteRenderer.bounds.size.y) / 2);
         car.transform.localScale = new Vector3(Mathf.Sign(lanes[lane]), 1, 1);
-
-        if (isStatic)
-        {
-            var distanceToPlayer = Mathf.Abs(car.transform.position.y - player.getRayPos.y);
-            var time = distanceToPlayer / WorldManager.carsSpeed;
-
-            var preferredDist = WorldManager.worldSpeed * time;
-            car.transform.position += Vector3.up * (preferredDist - distanceToPlayer);
-        }
 
         var collider = car.AddComponent<BoxCollider2D>();
         collider.size = spriteRenderer.bounds.size;
 
         if (turn > 0)
         {
+            if (wasStatic)
+            {
+                car.transform.position += Vector3.up * (staticSupposedPosition.y - car.transform.position.y);
+            }
+            else
+            {
+                car.transform.position += Vector3.up * (lastSpawnedCar.transform.position.y - car.transform.position.y);
+            }
+
             float sidebysideoffset = lastSpawnedCar.height - collider.size.y;
-            car.transform.position += Vector3.up * 0.5f * -sidebysideoffset;
+            car.transform.position += Vector3.up * (0.5f * -sidebysideoffset);
         }
 
         if (turn > 0)
         {
             lastHeight = Mathf.Max(lastSpawnedCar.height, collider.size.y);
+        }
+
+        if (isStatic)
+        {
+            staticSupposedPosition = car.transform.position;
+            var distanceToPlayer = Mathf.Abs(car.transform.position.y - (spriteRenderer.bounds.size.y * 0.5f) - player.getRayPos.y);
+            var time = distanceToPlayer / WorldManager.carsSpeed;
+
+            var preferredDist = WorldManager.worldSpeed * time;
+            car.transform.position += Vector3.up * (preferredDist - distanceToPlayer);
+
+            car.tag = "static";
         }
 
         lastSpawnedCar.renderer = spriteRenderer;
@@ -136,6 +172,8 @@ public class TrafficManager : MonoBehaviour
 
         if (isStatic) Obs.Add(lastSpawnedCar);
         else Cars.Add(lastSpawnedCar);
+
+        wasStatic = isStatic;
     }
 
     private void SpawnLASTMA()

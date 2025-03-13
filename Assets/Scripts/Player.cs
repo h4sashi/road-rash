@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
 
     Sprite[,] spriteArray;
 
-    Transform HitCar;
+    Transform HitCar, lastHitCar;
 
     // Start is called before the first frame update
     void Start()
@@ -55,6 +55,21 @@ public class Player : MonoBehaviour
         };
     }
 
+
+    void Update()
+    {
+        if (!GameStateManager.Singleton.isGameOver && Time.timeScale > 0)
+        {
+            Time.timeScale = 1f;// Reset time scale
+            if (HitCar && HitCar.CompareTag("static") && isBlocking)
+            {
+                Time.timeScale = WorldManager.carsSpeed / WorldManager.worldSpeed;// slow down the game
+                Debug.Log("slowingDown");
+            }
+        }
+    }
+    bool isBlocking;
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -65,7 +80,7 @@ public class Player : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0, 0, orientation);
 
-        if (Blocked(out int _freelane, out hitDistance))
+        if (isBlocking = Blocked(out int _freelane, out hitDistance))
         {
             freeLane = _freelane;
         }
@@ -104,6 +119,7 @@ public class Player : MonoBehaviour
         distance = float.MaxValue;
 
         RaycastHit2D hit2D;
+        lastHitCar = HitCar;
 
         if ((hit2D = Physics2D.Raycast(new Vector2(lanes[targetLane], rayPoint.position.y), Vector2.up, rayLength)).transform)
         {

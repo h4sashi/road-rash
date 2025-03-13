@@ -51,11 +51,11 @@ public class GameStateManager : MonoBehaviour
         player.UpdatePlayerIcon();
 #if UNITY_EDITOR
 #else
-        Vibrate(1000);
+        if(Settings.hapticOn) Vibrate(1000);
 #endif
         if (chances == 0)
         {
-            SoundManager.instance.Play("GameOverSound");
+            SoundManager.Instance?.Play("GameOverSound");
             GameOver();
         }
     }
@@ -70,6 +70,8 @@ public class GameStateManager : MonoBehaviour
 
         LeaderboardManager.Singleton.SubmitScore(score);
         Invoke(nameof(ShowGameOverScreen), FindObjectOfType<WorldManager>().brakeTime + 0.75f);
+
+        if (Time.timeScale < 1) Time.timeScale = 1;
     }
     void ShowGameOverScreen()
     {
@@ -78,7 +80,8 @@ public class GameStateManager : MonoBehaviour
 
     public void AddScore(int _score)
     {
-        score += _score;
+        var addition = Mathf.Min(100, _score * Mathf.Max(1, (int)Time.timeSinceLevelLoad / 5));
+        score += addition;
     }
 
     public int getScore => score;

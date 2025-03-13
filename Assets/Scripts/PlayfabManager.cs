@@ -48,13 +48,13 @@ public class PlayfabManager : MonoBehaviour
 
             if (isLoggedIn == true)
             {
-                SoundManager.instance.Play("MenuVoicing");
+                SoundManager.Instance.Play("MenuVoicing");
             }
 
         }
         if (scene.buildIndex > 0)
         {
-            SoundManager.instance.Stop("MenuVoicing");
+            SoundManager.Instance.Stop("MenuVoicing");
         }
     }
 
@@ -76,7 +76,7 @@ public class PlayfabManager : MonoBehaviour
 
             soundManager.SetActive(true); // Enable sound manager\
 
-            SoundManager.instance.Play("MenuVoicing");
+            SoundManager.Instance.Play("MenuVoicing");
 
             loginManager.loaderUI.SetActive(false); // Hide loader UI
             loginManager.startHolder.SetActive(true); // Hide small login UI

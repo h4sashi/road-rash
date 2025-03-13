@@ -1283,6 +1283,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 243493631}
   m_CullTransparentMesh: 1
+--- !u!1 &257740091
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 257740093}
+  - component: {fileID: 257740092}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &257740092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257740091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98d79aff0ecd34a8885b7873a5f45e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds: []
+--- !u!4 &257740093
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257740091}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &268155146
 GameObject:
   m_ObjectHideFlags: 0
@@ -4943,6 +4988,7 @@ GameObject:
   - component: {fileID: 965751591}
   - component: {fileID: 965751590}
   - component: {fileID: 965751592}
+  - component: {fileID: 965751593}
   m_Layer: 5
   m_Name: Pause
   m_TagString: Untagged
@@ -5028,6 +5074,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screenType: 2
   screenName: 
+--- !u!114 &965751593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965751588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca7f71753dee8184d81bfac09745425a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Music: {fileID: 1885150273}
+  SFX: {fileID: 2100756957}
+  Haptic: {fileID: 2024502452}
 --- !u!1 &978269546
 GameObject:
   m_ObjectHideFlags: 0
@@ -6634,7 +6695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 408b3307bc9ef184a9fc0aa2c9a44fc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weatherType: 0
+  weatherType: 1
 --- !u!4 &1231367291
 Transform:
   m_ObjectHideFlags: 0
@@ -10218,7 +10279,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0.8584906, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -12169,3 +12230,4 @@ SceneRoots:
   - {fileID: 875218750}
   - {fileID: 864992508}
   - {fileID: 2131920475}
+  - {fileID: 257740093}
