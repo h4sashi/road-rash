@@ -10,6 +10,7 @@ public class PlayfabManager : MonoBehaviour
     public bool isLoggedIn = false;
 
     private LoginManager loginManager;
+    public GameObject soundManager;
 
 
     private void Awake()
@@ -45,6 +46,15 @@ public class PlayfabManager : MonoBehaviour
         {
             loginManager = GameObject.Find("LoginManager").GetComponent<LoginManager>();
 
+            if (isLoggedIn == true)
+            {
+                SoundManager.instance.Play("MenuVoicing");
+            }
+
+        }
+        if (scene.buildIndex > 0)
+        {
+            SoundManager.instance.Stop("MenuVoicing");
         }
     }
 
@@ -63,6 +73,10 @@ public class PlayfabManager : MonoBehaviour
         {
             isLoggedIn = true;
             Debug.Log("Login Successful! User ID: " + result.PlayFabId);
+
+            soundManager.SetActive(true); // Enable sound manager\
+
+            SoundManager.instance.Play("MenuVoicing");
 
             loginManager.loaderUI.SetActive(false); // Hide loader UI
             loginManager.startHolder.SetActive(true); // Hide small login UI
@@ -140,7 +154,7 @@ public class PlayfabManager : MonoBehaviour
             if (uiManager != null)
             {
                 uiManager.usernameText.text = result.DisplayName; // Show updated username
-                Debug.Log("Username is ="+result.DisplayName);
+                Debug.Log("Username is =" + result.DisplayName);
                 uiManager.usernamePanel.SetActive(false); // Hide username input panel
                 uiManager.characterPanel.SetActive(true); // Show character selection panel
             }
