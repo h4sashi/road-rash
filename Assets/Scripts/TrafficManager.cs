@@ -29,7 +29,7 @@ public class TrafficManager : MonoBehaviour
     List<CarStruct> Obs;
     List<CarStruct> LastmaCars;
 
-    bool canSpawnObs;
+    int canSpawnObs;
 
     Player player;
 
@@ -38,6 +38,7 @@ public class TrafficManager : MonoBehaviour
         player = GameObject.FindObjectOfType<Player>();
 
         currentSpawnLane = 1;
+        canSpawnObs = 3;
 
         GameStateManager.OnGameOver += SpawnLASTMA;
         WeatherManager.OnWeatherChange += UpdateCarSpritesOnWeatherChange;
@@ -80,7 +81,7 @@ public class TrafficManager : MonoBehaviour
         SpawnCar(0);
         SpawnCar(1);
         UpdateSpawnLane();
-        canSpawnObs = true;
+        canSpawnObs--;
     }
 
     int lastLane = 0;
@@ -106,7 +107,7 @@ public class TrafficManager : MonoBehaviour
             lastLane = lane;
         }
 
-        bool isStatic = ((Random.Range(0, 1000) % 3) == 0) && (lane != 1) && canSpawnObs;
+        bool isStatic = ((Random.Range(0, 1000) % 3) == 0) && (lane != 1) && canSpawnObs <= 0;
 
         int day_night = WeatherManager.GetDayNight();
         int index = Random.Range(0, vehicles.Length / 2);

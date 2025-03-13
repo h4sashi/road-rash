@@ -12,7 +12,6 @@ public class PlayfabManager : MonoBehaviour
     private LoginManager loginManager;
     public GameObject soundManager;
 
-
     private void Awake()
     {
         if (Instance == null)
@@ -48,7 +47,7 @@ public class PlayfabManager : MonoBehaviour
 
             if (isLoggedIn == true)
             {
-                SoundManager.Instance.Play("MenuVoicing");
+                //SoundManager.Instance.Play("MenuVoicing");
             }
 
         }
@@ -76,7 +75,7 @@ public class PlayfabManager : MonoBehaviour
 
             soundManager.SetActive(true); // Enable sound manager\
 
-            SoundManager.Instance.Play("MenuVoicing");
+            //SoundManager.Instance.Play("MenuVoicing");
 
             loginManager.loaderUI.SetActive(false); // Hide loader UI
             loginManager.startHolder.SetActive(true); // Hide small login UI

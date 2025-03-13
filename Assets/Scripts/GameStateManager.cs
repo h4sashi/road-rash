@@ -55,7 +55,7 @@ public class GameStateManager : MonoBehaviour
 #endif
         if (chances == 0)
         {
-            SoundManager.Instance?.Play("GameOverSound");
+            SoundManager.Instance?.Play("GameOverSound", true);
             GameOver();
         }
     }

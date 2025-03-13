@@ -29,15 +29,18 @@ public class SoundManager : MonoBehaviour
             s.source.volume = s.volume;
             s.source.pitch = s.pitch;
             s.source.loop = s.loop;
+            s.source.playOnAwake = s.playOnAwake;
 
-            if (s.playOnAwake)
-            {
-                s.source.Play();
-            }
+            /*// if (s.playOnAwake)
+            // {
+            //     s.source.Play();
+            // }*/
         }
+
+        FindObjectOfType<Settings>().ToggleMusic();
     }
 
-    public void Play(string soundName, bool sfx = false)
+    public void Play(string soundName, bool sfx = false, float pitch = 1f)
     {
         if (sfx && !Settings.sfxOn) return;
 
@@ -47,6 +50,7 @@ public class SoundManager : MonoBehaviour
             Debug.LogWarning("Sound: " + soundName + " not found!");
             return;
         }
+        s.source.pitch = pitch;
         s.source.Play();
     }
 

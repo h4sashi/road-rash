@@ -63,7 +63,7 @@ public class Player : MonoBehaviour
             Time.timeScale = 1f;// Reset time scale
             if (HitCar && HitCar.CompareTag("static") && isBlocking)
             {
-                Time.timeScale = WorldManager.carsSpeed / WorldManager.worldSpeed;// slow down the game
+                Time.timeScale = WorldManager.speedRatio;// slow down the game
                 Debug.Log("slowingDown");
             }
         }

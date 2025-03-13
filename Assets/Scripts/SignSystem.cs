@@ -65,6 +65,8 @@ public class SignSystem : MonoBehaviour
             UpdateSign();
 
             TutorialManager.Singleton.TriggerTutorial(2);
+
+            SoundManager.Instance?.Play("Crash", true, Random.Range(0.9f, 1.1f));
         }
 
         if (buttonIndicatorHolder)

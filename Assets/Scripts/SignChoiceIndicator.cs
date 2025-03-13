@@ -15,7 +15,6 @@ public class SignChoiceIndicator : MonoBehaviour
     void Start()
     {
         spriteRenderer.color = new Color(1, 1, 1, 0);
-
     }
 
     void Update()

@@ -11751,7 +11751,7 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     loop: 1
-    playOnAwake: 1
+    playOnAwake: 0
     source: {fileID: 0}
   - name: MenuVoicing
     clip: {fileID: 8300000, guid: a1845ba3d21554b589dc54c38741e585, type: 3}
@@ -11769,6 +11769,13 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: GameOverSound_2
     clip: {fileID: 8300000, guid: c4a979e32d42742e79bb14ec055aac37, type: 3}
+    volume: 0.65
+    pitch: 1
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: Crash
+    clip: {fileID: 8300000, guid: 5eeda67341220b447839b4217e43eedb, type: 3}
     volume: 0.65
     pitch: 1
     loop: 0

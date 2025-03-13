@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class WorldManager : MonoBehaviour
 {
+    public static WorldManager Instance { get; set; }
+
     [SerializeField] private TrafficManager trafficManager;
     [SerializeField] private WeatherManager weatherManager;
 
@@ -20,6 +22,7 @@ public class WorldManager : MonoBehaviour
 
     public static float worldSpeed;
     public static float carsSpeed;
+    public static float speedRatio;
 
     float stopTimer = 0;
     public float brakeTime;
@@ -47,6 +50,7 @@ public class WorldManager : MonoBehaviour
             worldSpeed = scrollSpeed * multiplier;
         }
         carsSpeed = worldSpeed * carScrollSpeedRatio;
+        speedRatio = carScrollSpeedRatio;
 
         GameStateManager.OnGameOver += () =>
         {

@@ -8,14 +8,14 @@ public class Settings : MonoBehaviour
     [SerializeField] Toggle Music, SFX, Haptic;
     public static bool musicOn, sfxOn, hapticOn;
 
-    void Awake()
+    void Start()
     {
         Music.onValueChanged.AddListener((isOn) =>
         {
             PlayerPrefs.SetInt("MUSIC", isOn ? 1 : 0);
             PlayerPrefs.Save();
             musicOn = isOn;
-            if (!musicOn) SoundManager.Instance.Stop("Theme");
+            ToggleMusic();
         });
 
         SFX.onValueChanged.AddListener((isOn) =>
@@ -32,18 +32,27 @@ public class Settings : MonoBehaviour
             hapticOn = isOn;
         });
 
-        Music.isOn = PlayerPrefs.GetInt("MUSIC", 1) > 0;
-        SFX.isOn = PlayerPrefs.GetInt("SFX", 1) > 0;
-        Haptic.isOn = PlayerPrefs.GetInt("HAPTIC", 1) > 0;
-    }
-
-    void Start()
-    {
-
+        musicOn = Music.isOn = PlayerPrefs.GetInt("MUSIC", 1) > 0;
+        sfxOn = SFX.isOn = PlayerPrefs.GetInt("SFX", 1) > 0;
+        hapticOn = Haptic.isOn = PlayerPrefs.GetInt("HAPTIC", 1) > 0;
     }
 
     void Update()
     {
 
+    }
+
+    public void ToggleMusic()
+    {
+        if (!Music.isOn)
+        {
+            SoundManager.Instance?.Stop("Theme");
+            SoundManager.Instance?.Stop("MenuVoicing");
+        }
+        else
+        {
+            SoundManager.Instance?.Play("Theme");
+            SoundManager.Instance?.Play("MenuVoicing");
+        }
     }
 }
