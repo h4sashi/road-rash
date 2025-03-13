@@ -10,6 +10,7 @@ public class TrafficManager : MonoBehaviour
     [SerializeField] private Sprite[] NightVehicles;
     [SerializeField] private Sprite[] LASTMAVehicles;
     [SerializeField] private int CarSpacing = 5;
+    [SerializeField] private Sprite[] Obstacles;
 
     private int[] lanes = { -4, 0, 4 };
     private int currentSpawnLane;
@@ -25,6 +26,7 @@ public class TrafficManager : MonoBehaviour
     }
     CarStruct lastSpawnedCar;
     List<CarStruct> Cars;
+    List<CarStruct> Obs;
     List<CarStruct> LastmaCars;
 
     Player player;
@@ -40,6 +42,7 @@ public class TrafficManager : MonoBehaviour
 
         vehicles = NightVehicles.Concat(DayVehicles).ToArray();
         Cars = new List<CarStruct>();
+        Obs = new List<CarStruct>();
         LastmaCars = new List<CarStruct>();
         Spawn();
     }
@@ -65,16 +68,6 @@ public class TrafficManager : MonoBehaviour
     {
         if (GameStateManager.Singleton.isGameOver) return;
 
-        int day_night = WeatherManager.GetDayNight();
-        int index = Random.Range(0, vehicles.Length / 2);
-
-        var carSprite = vehicles[day_night * vehicles.Length / 2 + index];
-
-        GameObject car = new GameObject(carSprite.name);
-
-        var spriteRenderer = car.AddComponent<SpriteRenderer>();
-        spriteRenderer.sprite = carSprite;
-
         int lane = currentSpawnLane;
         if (turn > 0)
         {
@@ -89,7 +82,27 @@ public class TrafficManager : MonoBehaviour
             lastLane = lane;
         }
 
+        bool isStatic = ((Random.Range(0, 1000) % 3) == 0) && (lane != 1);
+
+        int day_night = WeatherManager.GetDayNight();
+        int index = Random.Range(0, vehicles.Length / 2);
+
+        Sprite carSprite;// = vehicles[day_night * vehicles.Length / 2 + index];
+        if (isStatic)
+        {
+            carSprite = Obstacles[Random.Range(0, Obstacles.Length)];
+        }
+        else
+        {
+            carSprite = vehicles[day_night * vehicles.Length / 2 + index];
+        }
+
+        GameObject car = new GameObject(carSprite.name);
+        var spriteRenderer = car.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = carSprite;
+
         car.transform.position = new Vector3(lanes[lane], 25 + lastHeight);
+        car.transform.localScale = new Vector3(Mathf.Sign(lanes[lane]), 1, 1);
 
         var collider = car.AddComponent<BoxCollider2D>();
         collider.size = spriteRenderer.bounds.size;
@@ -112,7 +125,8 @@ public class TrafficManager : MonoBehaviour
 
         lastOnlane[lane] = (int)spriteRenderer.size.y;
 
-        Cars.Add(lastSpawnedCar);
+        if (isStatic) Obs.Add(lastSpawnedCar);
+        else Cars.Add(lastSpawnedCar);
     }
 
     private void SpawnLASTMA()
@@ -152,6 +166,11 @@ public class TrafficManager : MonoBehaviour
         player.MoveToLane(side);
     }
 
+    public void SpawnObstacle()
+    {
+
+    }
+
     private void UpdateSpawnLane()
     {
         // int lane = currentSpawnLane;
@@ -167,10 +186,17 @@ public class TrafficManager : MonoBehaviour
         foreach (var car in Cars)
         {
             car.transform.position += Vector3.down * speed * Time.fixedDeltaTime;
+            //car.transform.position += Vector3.down * WorldManager.worldSpeed * Time.fixedDeltaTime;
         }
+
         foreach (var car in LastmaCars)
         {
             car.transform.position += Vector3.down * WorldManager.worldSpeed * Time.fixedDeltaTime;
+        }
+
+        foreach (var obs in Obs)
+        {
+            obs.transform.position += Vector3.down * WorldManager.worldSpeed * Time.fixedDeltaTime;
         }
     }
 
