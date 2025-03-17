@@ -12,6 +12,9 @@ public class GameOverScreen : MonoBehaviour
     public TextMeshProUGUI Note;
     //public AnimalSignsSO animalSigns;
     public AnimalSign[] animalSigns;
+
+    public Image[] gameOverCharacterImage;
+
     void OnEnable()
     {
         var sign = animalSigns[Random.Range(0, animalSigns.Length)];
@@ -40,5 +43,7 @@ public class GameOverScreen : MonoBehaviour
 
         layoutContainer.SetActive(!layoutContainer.activeSelf);
         layoutContainer.SetActive(!layoutContainer.activeSelf);
+
+        gameOverCharacterImage[(PlayerPrefs.GetInt("SELECTED_CHARACTER", 0))].gameObject.SetActive(true);
     }
 }
