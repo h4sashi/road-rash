@@ -45,7 +45,7 @@ public class WorldManager : MonoBehaviour
         }
         else
         {
-            multiplier = Mathf.Clamp(GameStateManager.Singleton.getScore / 150f, 1, 3.5f);
+            multiplier = Mathf.Clamp(GameStateManager.Singleton.getScore / 150f, 1, 3.0f);
             Difficulty = multiplier;
             worldSpeed = scrollSpeed * multiplier;
         }

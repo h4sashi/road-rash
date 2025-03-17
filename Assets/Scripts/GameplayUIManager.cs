@@ -12,6 +12,7 @@ public enum Screens
     Pause,
     Main,
     Tutorial,
+    Help,
 }
 
 public class GameplayUIManager : MonoBehaviour
