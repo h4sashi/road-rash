@@ -9,9 +9,17 @@ public class UIManager : MonoBehaviour
     public GameObject usernamePanel, characterPanel;
     public InputField usernameInput;
 
-    void Start()
+     public TextMeshProUGUI messageText;
+
+    // void Start()
+    // {
+    //     PlayfabManager.Instance.FetchUsername();
+    // }
+
+     void OnEnable()
     {
         PlayfabManager.Instance.FetchUsername();
+        Debug.Log("Fetching Username on OnEnable()");
     }
 
     public void Submit()

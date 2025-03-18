@@ -3137,6 +3137,7 @@ MonoBehaviour:
   usernamePanel: {fileID: 1252659253}
   characterPanel: {fileID: 649816267}
   usernameInput: {fileID: 1892583172}
+  messageText: {fileID: 1500840785}
 --- !u!1 &944861155
 GameObject:
   m_ObjectHideFlags: 0
@@ -5047,7 +5048,7 @@ GameObject:
   - component: {fileID: 1500840786}
   - component: {fileID: 1500840785}
   m_Layer: 5
-  m_Name: Text (TMP) (1)
+  m_Name: messageText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
