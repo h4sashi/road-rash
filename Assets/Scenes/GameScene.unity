@@ -7912,22 +7912,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutSections:
   - textPrompts:
-    - '{name}, Welcome to the streets of Lagos!'
-    - The land of milk and honey.
-    - Now let's show you how to not be an animal on the streets of Lagos.
+    - '{name}, Welcome to Lagos street'
+    - Here, chaos rules the road
+    - But let's teach you how to not be an animal on the road
     actionRequired: 0
   - textPrompts:
-    - Tap the corresponding sign from above in the rack below to avoid traffic.
+    - Tap the sign that matches the above one to avoid traffic
     actionRequired: 1
   - textPrompts:
-    - Yoh {name}! Easy man!<br>Don't be such an animal.
-    - Crashing into traffic makes you more of an animal.
-    - You can see how much of an animal you are in the top left.
-    - Cause too much menace and you can attract the Popo.
-    - I won't be there for you when that happens.
+    - Careful there! {name}
+    - The more you crash, the more you turn into an animal...
+    - ...and have the TRAFFIC OFFICER chasing you
+    - Check the top left to see how much of an animal you have become
     actionRequired: 0
   - textPrompts:
-    - Dang it {name}!<br>You finally got the Popo on us.
+    - Oh no {name}!<br>You have officialy become an animal
     actionRequired: 0
   textPrompts:
   - '{name}, Welcome to the streets of Lagos!'
@@ -15219,7 +15218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd9174464ef287e4084d80dce65c390c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameURL: https://yourgameurl.com
+  gameURL: https://sabidriver.com
 --- !u!4 &2131920475
 Transform:
   m_ObjectHideFlags: 0
